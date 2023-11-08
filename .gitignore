@@ -15,6 +15,9 @@ pids
 node_modules/
 jspm_packages/
 
+# Typescript compiled output
+dist/
+
 # Optional eslint cache
 .eslintcache
 

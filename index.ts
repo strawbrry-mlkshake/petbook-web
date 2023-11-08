@@ -1,5 +1,8 @@
+require("dotenv").config();
+
 import express from "express";
 import bodyParser from "body-parser";
+import crypto from "crypto";
 
 // Initialize express application
 const app = express();
@@ -19,7 +22,42 @@ app.post("/reverse", (req, res) => {
   res.send({ reversed: reversedString });
 });
 
-// Start the server
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+app.get("/generate", (req, res) => {
+  const length = parseInt(req.query.length as string);
+
+  // Generate a random string
+  const randomString = crypto
+    .randomBytes(length)
+    .toString("hex")
+    .substring(0, length);
+
+  // Send the random string as the response
+  res.send({ string: randomString });
 });
+
+app.get("/generateAndReverse", (req, res) => {
+  const length = parseInt(req.query.length as string);
+
+  // Generate a random string
+  const randomString = crypto
+    .randomBytes(length)
+    .toString("hex")
+    .substring(0, length);
+
+  // Reverse the string
+  const reversedString = randomString.split("").reverse().join("");
+
+  // Send the original and reversed strings as the response
+  res.send({ original: randomString, reversed: reversedString });
+});
+
+const port = process.env.PORT || 3000;
+
+// Start the server
+if (process.env.DEVELOPMENT === "true") {
+  app.listen(3000, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+  });
+}
+
+export default app;
